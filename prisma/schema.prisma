@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../test.db"
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model customers {
+  id      String @id @default(uuid())
+  name    String
+  address String
+  email   String
+  phone   String
+  sales   sales[]
+
+
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model invoices {
+  id                String @id @default(uuid())
+  sale_id           String
+  total_sale_amount Float
+  invoice_date      String
+}
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model products {
+  id                     String      @id @default(uuid())
+  name                   String
+  barcode                String?      @unique(map: "sqlite_autoindex_products_2")
+  sale_price             Float
+  purchase_price         Float
+  stock_quantity         Int
+  last_stock_update_date String
+  properties             properties[]
+  purchases              purchases[]
+  sales                  sales[]
+
+  
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model properties {
+  id         String  @id
+  name       String
+  value      String
+  product_id String
+  products   products @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model purchases {
+  id                 String   @id
+  supplier_id        String
+  product_id         String
+  purchase_price     Float
+  purchased_quantity Int
+  purchase_date      String
+  products           products  @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  suppliers          suppliers @relation(fields: [supplier_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model sales {
+  id            String    @id @default(uuid())
+  customer_id   String
+  product_id    String
+  sale_price    Float
+  sold_quantity Int
+  sale_date     String
+  products      products  @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  customers     customers @relation(fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model suppliers {
+  id        String     @id
+  name      String
+  address   String
+  email     String
+  phone     String
+  purchases purchases[]
+
+  
+}
