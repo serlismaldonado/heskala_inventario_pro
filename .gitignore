@@ -30,3 +30,9 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# database test.db
+test.db
+/prisma/migrations
+/prisma/test.db
+test.db-journal

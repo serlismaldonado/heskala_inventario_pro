@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 export default async function handler(req, res) {
     const prisma = new PrismaClient();
     if (req.method === "GET") {
-        const invoices = await prisma.invoices.findMany();
+        const invoices = await prisma.invoice.findMany();
         res.status(200).json(invoices);
     }
     
@@ -16,7 +16,7 @@ export default async function handler(req, res) {
     }
     
     if (req.method === "PUT") {
-        const invoice = await prisma.invoices.update({
+        const invoice = await prisma.invoice.update({
         where: {
             id: String(req.body.id),
         },
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     }
     
     if (req.method === "DELETE") {
-        const invoice = await prisma.invoices.delete({
+        const invoice = await prisma.invoice.delete({
         where: {
             id: String(req.body.id),
         },

@@ -1,13 +1,6 @@
-import Head from 'next/head'
-import Header from './Header'
-export default function Layout({ children }) {
-	return (
-		<div className='w-full'>
-			<Head>
-				<title>My page</title>
-			</Head>
-			<Header />
-			{children}
-		</div>
-	)
+import { createContext } from 'react'
+
+export const CompanyContext = createContext()
+export default function Page({ children }) {
+	return <></>
 }
