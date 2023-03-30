@@ -1,9 +1,14 @@
 import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
 export default async function handler(req, res) {
-    if(req.method === 'GET') {
-        const prisma = new PrismaClient()
-        const products = await prisma.product.findMany()
-        res.status(200).json(products)
+    if (req.method === 'GET' ) {
+        try {
+            const prisma = new PrismaClient()
+            const products = await prisma.product.findMany()
+            res.status(200).json(products)
+        } catch (error) {
+            res.status(500).json({ error: error.message })
+        }
     }
 
 
@@ -37,3 +42,12 @@ export default async function handler(req, res) {
         res.status(200).json(product)   
     }
 }
+
+
+
+
+
+
+
+
+

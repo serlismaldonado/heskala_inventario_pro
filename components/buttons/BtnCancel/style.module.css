@@ -1,0 +1,25 @@
+.btn_cancel {
+	background: radial-gradient(ellipse, #f4f4f4 0%, #f0f0f0 40.41%);
+	background-blend-mode: normal;
+	backdrop-filter: blur(34px);
+	box-shadow: 0px 3px 9px 1px rgba(167, 167, 167, 0.5);
+	color: rgb(136, 136, 136);
+	border: none;
+	border-radius: 8px;
+	padding: 6px 12px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	outline: none;
+}
+.btn_cancel:hover {
+	background: radial-gradient(ellipse, #ededed 0%, #eaeaea 40.41%);
+	background-blend-mode: normal;
+	backdrop-filter: blur(34px);
+	box-shadow: 0px 5px 12px 1px rgba(118, 117, 117, 0.5);
+	color: #606060;
+	border: none;
+	border-radius: 8px;
+	padding: 6px 12px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}

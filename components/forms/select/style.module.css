@@ -1,0 +1,25 @@
+/* Create class input_text with border based in
+	background: radial-gradient(circle, #a385f2 0%, #73a3f4 57.71%);
+	background-blend-mode: normal;
+	backdrop-filter: blur(34px);
+	box-shadow: 0px 12px 36px 1px rgba(207, 130, 255, 0.5);
+*/
+.input_select {
+	color: rgb(144, 141, 141);
+	border: hsla(249, 89%, 90%, 0.5) 1px solid;
+	border-radius: 8px;
+	padding: 6px 12px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	outline: none;
+	width: 100%;
+}
+
+.input_select:focus {
+	color: rgb(65, 65, 65);
+	border: #73a3f4 1px solid;
+	border-radius: 8px;
+	padding: 6px 12px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}

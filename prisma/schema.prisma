@@ -8,263 +8,359 @@ datasource db {
 }
 
 model TablePermission {
-  id               String           @id @default(uuid())
-  table_name       String
-  id_table         String
-  can_create       Boolean
-  can_read         Boolean
-  can_update       Boolean
-  can_delete       Boolean
-  roles           Role[]  
+  id         String  @id @default(uuid())
+  table_name String
+  id_table   String
+  can_create Boolean
+  can_read   Boolean
+  can_update Boolean
+  can_delete Boolean
+  roles      Role[]
 }
+
 model UserAction {
-  id            String         @id @default(uuid())
-  user_id       String
-  table_name    String
-  element_id    String
-  action_type   ActionType    @relation(fields: [action_type_id], references: [id])
+  id             String          @id @default(uuid())
+  user_id        String
+  table_name     String
+  element_id     String
+  action_type    ActionType      @relation(fields: [action_type_id], references: [id])
   action_type_id String
-  created_at    DateTime       @default(now())
-  user         User           @relation(fields: [user_id], references: [id])
+  created_at     DateTime        @default(now())
+  user           UserPreferences @relation(fields: [user_id], references: [id])
 
   @@index([user_id, table_name, element_id], name: "user_action_index")
 }
+
 model ActionType {
-  id            String         @id @default(uuid())
-  name          String
-  user_actions  UserAction[]
+  id           String       @id @default(uuid())
+  name         String
+  user_actions UserAction[]
 }
+
 model User {
-  id                String           @id @default(uuid())
-  email             String           @unique
-  name              String?
-  last_name         String?
-  hashed_password   String?
-  role             Role             @relation(fields: [role_id], references: [id])
-  role_id           String
-  user_actions      UserAction[]
-  company           Company          @relation(fields: [company_id], references: [id])
-  company_id        String
-  branches         Branch[]
-  preference     UserPreferences?   
+  id              String           @id @default(uuid())
+  email           String           @unique
+  name            String?
+  last_name       String?
+  hashed_password String?
+  image           String?
+  emailVerified   DateTime?
+  preference      UserPreferences?
+  id_company      String?
+  company         Company?         @relation(fields: [id_company], references: [id])
+  sessions        Session[]
+  accounts        Account[]
 }
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
 model UserPreferences {
-  id                String           @id @default(uuid())
-  theme             String
-  language          String
-  currency          String
-  timezone          String
-  date_format       String
-  time_format       String
-  decimal_separator String
-  thousands_separator String
-  decimal_places    Int
-  user_id           String          @unique
-  user              User             @relation(fields: [user_id], references: [id])
+  id           String       @id @default(uuid())
+  theme        String
+  user_id      String       @unique
+  user         User         @relation(fields: [user_id], references: [id])
+  role         Role         @relation(fields: [role_id], references: [id])
+  role_id      String
+  user_actions UserAction[]
+  branches     Branch[]
 }
+
 model Role {
-  id               String          @id @default(uuid())
+  id               String            @id @default(uuid())
   name             String
   description      String?
-  users            User[]
-  tables          TablePermission[]
+  user_preferences UserPreferences[]
+  tables           TablePermission[]
 }
+
 model Company {
-  id        String  @id @default(uuid())
-  name      String
-  address   String
-  phone     String
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now())
-  branches  Branch[]
-  users     User[]
-  customers Customer[]
-  suppliers Supplier[]
+  id                  String           @id @default(uuid())
+  name                String
+  address             String
+  phone               String
+  created_at          DateTime         @default(now())
+  updated_at          DateTime         @default(now())
+  branches            Branch[]
+  users               User[]
+  customers           Customer[]
+  suppliers           Supplier[]
   company_settings_id CompanySettings?
 }
+
 model CompanySettings {
-  id        String  @id @default(uuid())
-  company   Company @relation(fields: [company_id], references: [id])
-  company_id String @unique
-  taxes     Taxes[]
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now())
-  currency  String
-  timezone  String
-  date_format String
-  time_format String
-  decimal_separator String
+  id                  String   @id @default(uuid())
+  company             Company  @relation(fields: [company_id], references: [id])
+  company_id          String   @unique
+  taxes               Taxes[]
+  created_at          DateTime @default(now())
+  updated_at          DateTime @default(now())
+  currency            String
+  timezone            String
+  date_format         String
+  time_format         String
+  decimal_separator   String
   thousands_separator String
-  decimal_places Int
+  decimal_places      Int
 }
+
 model Taxes {
-  id        String  @id @default(uuid())
-  company_setting   CompanySettings @relation(fields: [company_setting_id], references: [id])
+  id                 String          @id @default(uuid())
+  company_setting    CompanySettings @relation(fields: [company_setting_id], references: [id])
   company_setting_id String
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now())
-  name      String
-  value     Float
-  products Product[]
+  created_at         DateTime        @default(now())
+  updated_at         DateTime        @default(now())
+  name               String
+  value              Float
+  products           Product[]
 }
+
 model Branch {
-  id        String  @id @default(uuid())
-  name      String
-  address   String
-  phone     String
-  company   Company @relation(fields: [company_id], references: [id])
-  employees Employee[]
-  products Product[]
-  users   User[]
-  company_id String
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now())
-}
-model Supplier {
-  id        String     @id
-  name      String
-  address   String
-  email     String
-  phone     String
-  purchases Purchase[]
-  id_company String
-  company   Company    @relation(fields: [id_company], references: [id])
-}
-model Customer {
-  id         String  @id @default(uuid())
+  id         String            @id @default(uuid())
   name       String
-  phones      CustomerPhones[]
-  emails      CustomerEmails[]
-  sales      Sale[]
-  company    Company @relation(fields: [company_id], references: [id])
-  company_id String
-}
-model CustomerPhones {
-  id         String  @id @default(uuid())
-  customer_id String
+  address    String
   phone      String
-  customer   Customer @relation(fields: [customer_id], references: [id])
+  company    Company           @relation(fields: [company_id], references: [id])
+  employees  Employee[]
+  products   Product[]
+  users      UserPreferences[]
+  company_id String
+  created_at DateTime          @default(now())
+  updated_at DateTime          @default(now())
 }
-model CustomerEmails {
-  id         String  @id @default(uuid())
-  customer_id String
-  email      String
-  customer   Customer @relation(fields: [customer_id], references: [id])
-}
-model Employee {
-  id         String  @id @default(uuid())
+
+model Supplier {
+  id         String     @id
   name       String
   address    String
   email      String
   phone      String
-  branch     Branch  @relation(fields: [branch_id], references: [id])
+  purchases  Purchase[]
+  id_company String
+  company    Company    @relation(fields: [id_company], references: [id])
+}
+
+model Customer {
+  id         String           @id @default(uuid())
+  name       String
+  phones     CustomerPhones[]
+  emails     CustomerEmails[]
+  sales      Sale[]
+  company    Company          @relation(fields: [company_id], references: [id])
+  company_id String
+}
+
+model CustomerPhones {
+  id          String   @id @default(uuid())
+  customer_id String
+  phone       String
+  customer    Customer @relation(fields: [customer_id], references: [id])
+}
+
+model CustomerEmails {
+  id          String   @id @default(uuid())
+  customer_id String
+  email       String
+  customer    Customer @relation(fields: [customer_id], references: [id])
+}
+
+model Employee {
+  id         String   @id @default(uuid())
+  name       String
+  address    String
+  email      String
+  phone      String
+  branch     Branch   @relation(fields: [branch_id], references: [id])
   branch_id  String
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 }
+
 model Sale {
-  id            String  @id @default(uuid())
-  sale_price    Float  @default(0)
-  sold_quantity Int    @default(0)
-  sale_date     DateTime @default(now())
-  invoice_id    Invoice?
-  customer_id   String
-  customer      Customer @relation(fields: [customer_id], references: [id])
-  product_sales ProductSales[]
-  status        String  @default("Quoted")
+  id                String         @id @default(uuid())
+  sale_price        Float          @default(0)
+  sold_quantity     Int            @default(0)
+  sale_date         DateTime       @default(now())
+  invoice_id        Invoice?
+  customer_id       String
+  customer          Customer       @relation(fields: [customer_id], references: [id])
+  product_sales     ProductSales[]
+  payment_method_id String
+  payment_method    PaymentMethod  @relation(fields: [payment_method_id], references: [id])
+  payment_type_id   String
+  payment_type      PaymentType    @relation(fields: [payment_type_id], references: [id])
+  credit_id         Credit?
+  status            String         @default("Quoted")
 }
+
+model Credit {
+  id            String          @id @default(uuid())
+  sale_id       String          @unique
+  sale          Sale            @relation(fields: [sale_id], references: [id])
+  start_date    DateTime        @default(now())
+  end_date      DateTime        @default(now())
+  credit_date   DateTime        @default(now())
+  credit_value  Float
+  payments      CreditPayment[]
+  credit_status String          @default("Pending")
+}
+
+model CreditPayment {
+  id               String   @id @default(uuid())
+  credit_id        String   @unique
+  credit           Credit   @relation(fields: [credit_id], references: [id])
+  payment_end_date DateTime @default(now())
+  payment_date     DateTime @default(now())
+  payment_value    Float
+  status           String   @default("Pending")
+}
+
+model PaymentType {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  sales       Sale[]
+}
+
 model ProductSales {
-  id         String  @id @default(uuid())
+  id         String         @id @default(uuid())
   sale_id    String
   product_id String
   quantity   Int
-  sale       Sale    @relation(fields: [sale_id], references: [id])
-  product   ProductVersion @relation(fields: [product_id], references: [id])
-  status     String  @default("Quoted")
+  sale       Sale           @relation(fields: [sale_id], references: [id])
+  product    ProductVersion @relation(fields: [product_id], references: [id])
+  status     String         @default("Quoted")
 }
+
 model Invoice {
-  id                String  @id @default(uuid())
-  correlative_id    String  @unique
+  id                String      @id @default(uuid())
+  correlative_id    String      @unique
   invoice_header    String
-  isv               Float  @default(0)
-  sale_id           String @unique
+  isv               Float       @default(0)
+  sale_id           String      @unique
   total_sale_amount Float
-  invoice_date      DateTime   
-  sale              Sale @relation(fields: [sale_id], references: [id])
+  invoice_date      DateTime
+  sale              Sale        @relation(fields: [sale_id], references: [id])
   correlative       Correlative @relation(fields: [correlative_id], references: [id])
 }
+
 model Correlative {
-  id        String  @id @default(uuid())
-  name      String
-  prefix    String
-  suffix    String
-  start     Int
-  end       Int
-  current   Int
-  invoices  Invoice[]
+  id       String    @id @default(uuid())
+  name     String
+  prefix   String
+  suffix   String
+  start    Int
+  end      Int
+  current  Int
+  invoices Invoice[]
 }
+
 model Product {
-  id                     String  @id @default(uuid())
-  name                   String
-  description            String
-  taxes                  Taxes[]
-  versions               ProductVersion[]
-  brand_id   String
-  brand      Brand    @relation(fields: [brand_id], references: [id])
-  branch     Branch   @relation(fields: [branch_id], references: [id])
-  branch_id  String
-}
-model ProductVersion {
-  id         String  @id @default(uuid())
-  product_id String
-  product    Product @relation(fields: [product_id], references: [id])
-  name       String
+  id          String           @id @default(uuid())
+  name        String
   description String
-  barcode    String?  @unique
-  sale_price Float
+  taxes       Taxes[]
+  versions    ProductVersion[]
+  brand_id    String
+  brand       Brand            @relation(fields: [brand_id], references: [id])
+  branch      Branch           @relation(fields: [branch_id], references: [id])
+  branch_id   String
+}
+
+model ProductVersion {
+  id             String         @id @default(uuid())
+  product_id     String
+  product        Product        @relation(fields: [product_id], references: [id])
+  name           String
+  description    String
+  barcode        String?        @unique
+  sale_price     Float
   purchase_price Float
   stock_quantity Int
-  properties Property[]
-  purchases  Purchase[]
-  product_sales ProductSales[]
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now())
+  properties     Property[]
+  purchases      Purchase[]
+  product_sales  ProductSales[]
+  created_at     DateTime       @default(now())
+  updated_at     DateTime       @default(now())
 }
+
 model Property {
-  id         String  @id
-  category    Category   @relation(fields: [id_category], references: [id])
+  id          String         @id
+  category    Category       @relation(fields: [id_category], references: [id])
   id_category String
-  name       String
-  value      String
-  product_id String
-  product    ProductVersion @relation(fields: [product_id], references: [id])
+  name        String
+  value       String
+  product_id  String
+  product     ProductVersion @relation(fields: [product_id], references: [id])
 }
+
 model Category {
-  id          String  @id @default(uuid())
+  id          String     @id @default(uuid())
   name        String
   description String
   properties  Property[]
 }
+
 model Brand {
-  id         String  @id @default(uuid())
-  name       String
-  products   Product[]
+  id                 String            @id @default(uuid())
+  name               String
+  products           Product[]
   product_categories ProductCategory[]
 }
+
 model ProductCategory {
-  id         String  @id @default(uuid())
-  name       String
-  brands     Brand[]
+  id     String  @id @default(uuid())
+  name   String
+  brands Brand[]
 }
+
 model Purchase {
-  id                 String   @id
+  id                 String         @id
   supplier_id        String
   product_id         String
   purchase_price     Float
   purchased_quantity Int
-  purchase_date      DateTime @default(now())
-  product            ProductVersion  @relation(fields: [product_id], references: [id])
-  supplier           Supplier @relation(fields: [supplier_id], references: [id])
+  purchase_date      DateTime       @default(now())
+  product            ProductVersion @relation(fields: [product_id], references: [id])
+  supplier           Supplier       @relation(fields: [supplier_id], references: [id])
+}
+
+model PaymentMethod {
+  id    String @id @default(uuid())
+  name  String
+  sales Sale[]
 }
 
 // NOTAS DE PRODUCTOS

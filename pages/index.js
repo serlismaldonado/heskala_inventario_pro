@@ -1,40 +1,42 @@
-export default function Home({ branch, company }) {
-  return (
-    <div>
-    </div>
-  )
+import Layout from '@/components/layouts/NavBarLayout'
+import NestedLayout from '@/components/layouts/NestedLayout'
+import PrivateLayout from '@/components/layouts/PrivateLayout'
+import { validateUserSession } from '@/middlewares/auth'
+import { useState, useEffect, Suspense } from 'react'
+import LoadingSpinner from '@/components/utils/LoadingSpinner'
+import { useSession } from 'next-auth/react'
+
+
+export default function Inicio({ children, userPreferences, sessionUser }) {
+
+	const [selectedBranch, setSelectBranch] = useState({
+		value: userPreferences.branches[0].id,
+		label: userPreferences.branches[0].name,
+	})
+
+	const { data: session, status } = useSession()
+
+	const changeBrandSelected = (e) => {
+		setSelectBranch(e)
+	}
+
+	if (status === 'loading') {
+		return <LoadingSpinner />
+	}
+
+	return (<Suspense fallback={<LoadingSpinner />}>
+    <PrivateLayout>
+				<NestedLayout
+					userPreferences={userPreferences}
+					sessionUser={sessionUser}
+					selectedBranch={selectedBranch}
+					setSelectBranch={changeBrandSelected}
+				/>
+		
+		</PrivateLayout></Suspense>
+	)
 }
 
-
-
-
-// export async function getStaticProps() {
-// 	const prisma = new PrismaClient()
-// 	const companyID = '70a600d5-7e2a-4dcc-991d-f414b337f47f'
-// 	const company = await prisma.company.findUnique({
-// 		where: {
-// 			id: companyID,
-// 		},
-// 		include: {
-// 			branches: true,
-// 			customers: true,
-// 		},
-// 	})
-// 	const branch = await prisma.branch.findFirst({
-// 		where: {
-// 			id: company.branches[0].id,
-// 		},
-// 		include: {
-// 			company: true,
-// 			products: true,
-// 			employees: true,
-// 			users: true,
-// 		},
-// 	})
-// 	return {
-// 		props: {
-// 			branch: JSON.parse(JSON.stringify(branch)),
-// 			company: JSON.parse(JSON.stringify(company)),
-// 		},
-// 	}
-// }
+export async function getServerSideProps(context) {
+	return await validateUserSession(context)
+}

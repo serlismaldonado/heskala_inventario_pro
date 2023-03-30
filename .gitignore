@@ -33,6 +33,13 @@ yarn-error.log*
 
 # database test.db
 test.db
+
+# prisma migrations
 /prisma/migrations
+
+# prisma database
 /prisma/test.db
-test.db-journal
+
+# All database files
+*.db
+

@@ -1,6 +1,6 @@
-import Navbar from '../Navbar/component'
+import Navbar from '../Navbar/NavBar'
 import { useContext } from 'react'
-import { CompanyContext } from './Layout'
+import { CompanyContext } from './NavBarLayout'
 export default function Header({ children }) {
 	const name = useContext(CompanyContext)
 	return (
