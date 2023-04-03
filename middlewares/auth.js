@@ -41,8 +41,6 @@ export async function validateUserSession(context) {
 		},
 	})
 
-	console.log(_userPreferences)
-	
 	return {
 		props: { userPreferences: JSON.parse(JSON.stringify(_userPreferences)), sessionUser: session.user },
 	}

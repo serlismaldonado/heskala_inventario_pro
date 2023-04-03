@@ -7,6 +7,7 @@ export default async function handler(req, res) {
         try {
             const prisma = new PrismaClient()
             const products = await prisma.product.findMany({
+                take: 10,
                 where: {
                     branch_id: String(req.query.branch_id)
                 }

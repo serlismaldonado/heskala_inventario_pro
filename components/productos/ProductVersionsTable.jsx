@@ -2,7 +2,7 @@ import TableActions from '../tables/TableActions/TableActions'
 import { useEffect, useState } from 'react'
 import { Suspense } from 'react'
 export default function ProductVersionTable({
-	branch_id,
+	selectedBranch,
 	children,
 	canRead,
 	canCreate,
@@ -10,11 +10,19 @@ export default function ProductVersionTable({
 	canUpdate,
 }) {
 	const [_products, setProducts] = useState([])
+	const [branch, setBranch] = useState(selectedBranch.value)
+
+	// Obtiene los productos de la sucursal seleccionada
 	useEffect(() => {
-		getProducts(user_id).then((data) => {
+		getProducts(branch).then((data) => {
 			setProducts(data)
 		})
-	}, [])
+	}, [branch])
+
+	// Actualiza la sucursal seleccionada
+	useEffect(() => {
+		setBranch(selectedBranch)
+	}, [selectedBranch])
 
 	return (
 		<Suspense
@@ -39,9 +47,12 @@ export default function ProductVersionTable({
 }
 
 async function getProducts(branch_id) {
-	const _products = await fetch('http://localhost:3000/api/product-versions', {
-		method: 'GET',
-	})
+	const _products = await fetch(
+		`http://localhost:3000/api/product-versions/${branch_id}`,
+		{
+			method: 'GET',
+		},
+	)
 
 	// mapping witout ids
 	const _mapProducts = await _products.json().then((data) => {

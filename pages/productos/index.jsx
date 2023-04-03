@@ -14,22 +14,20 @@ export default function Productos({ children, userPreferences, sessionUser }) {
 	const [productTable, setProductTable] = useState([])
 	const [user, setUser] = useState({})
 
-	const [selectedBranch, setSelectBranch] = useState({
-		value: userPreferences.branches[0].id,
-		label: userPreferences.branches[0].name,
-	})
+	const [selectedBranch, setSelectBranch] = useState(
+		userPreferences.branches[0].id,
+	)
 
-	const changeBrandSelected = (e) => {
-		setSelectBranch(e)
-	}
+	const changeBrandSelected = (e) => setSelectBranch(e)
 
-	useEffect(() => {
-		setProductTable(refreshTableProducts(tables, selectedBranch))
-	}, [selectedBranch, tables])
+	useEffect(
+		() => setProductTable(refreshTableProducts(tables, selectedBranch)),
+		[selectedBranch, tables],
+	)
 
 	// Refresca la tabla de productos cuando se cambia de sucursal o se cambia el rol del usuario
-	const refreshTableProducts = (tables, selectedBranch) => {
-		return tables.some((e) => e.table_name === 'product') ? (
+	const refreshTableProducts = (tables, selectedBranch) =>
+		tables.some((e) => e.table_name === 'product') ? (
 			<ProductTable
 				selectedBranch={selectedBranch}
 				canRead={tables.some(
@@ -48,7 +46,6 @@ export default function Productos({ children, userPreferences, sessionUser }) {
 		) : (
 			'No tienes permisos para ver esta tabla'
 		)
-	}
 
 	const { data: session, status } = useSession()
 
@@ -72,7 +69,7 @@ export default function Productos({ children, userPreferences, sessionUser }) {
 				</Layout>
 
 				<Suspense fallback={<LoadingSpinner />}>
-					<div className='md:container flex flex-col gap-3 p-5'>
+					<div className='md:container flex gap-3 p-5'>
 						<div className='flex flex-col'>{productTable}</div>
 					</div>
 				</Suspense>

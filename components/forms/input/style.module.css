@@ -10,7 +10,6 @@
 	border: hsla(249, 89%, 90%, 0.5) 1px solid;
 	background-blend-mode: normal;
 	backdrop-filter: blur(34px);
-	box-shadow: 0px 2px 5px 1px rgba(205, 205, 205, 0.5);
 	border-radius: 8px;
 	padding: 6px 12px;
 	cursor: pointer;
