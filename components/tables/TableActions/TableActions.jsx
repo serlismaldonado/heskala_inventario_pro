@@ -5,6 +5,7 @@ import BtnIconDelete from '@/components/buttons/BtnDelete/BtnIconDelete'
 import BtnIconUpdate from '@/components/buttons/BtnUpdate/BtnIconUpdate'
 import InputText from '@/components/forms/input/InputText'
 import InputSelect from '@/components/forms/select/InputSelect'
+import ProductsModal from '@/components/productos/ProductModal'
 import { useState, useEffect, useMemo } from 'react'
 
 function TableHeader({ columns }) {
@@ -97,9 +98,6 @@ function TableFooter({ data, columns }) {
 }
 
 export default function TableActions({
-	onClickUpdate,
-	onClickDelete,
-	onClickCreate,
 	data,
 	getCondition,
 	canRead,
@@ -107,6 +105,10 @@ export default function TableActions({
 	canDelete,
 	canCreate,
 	getFilterField,
+	isShowed,
+	setIsShowed,
+	action,
+	setAction
 }) {
 	// Estados de los permisos de CRUD para la tabla (por defecto false)
 	const [canReadState, setCanReadState] = useState(canRead || +false)
@@ -126,6 +128,15 @@ export default function TableActions({
 
 	const getParam = (data) => setParam(data)
 	const getField = (data) => setFilterField(data)
+
+	//Funciones para manejar estados de modal
+	const onClickCreate = () => {setIsShowed(true)
+			setAction('Create')} 
+	const onClickDelete = () => {setIsShowed(true)
+			setAction('Delete')} 
+	const onClickUpdate = () =>{setIsShowed(true)
+			setAction('Update')} 
+
 
 	useMemo(() => {
 		getCondition(param)
@@ -179,4 +190,5 @@ export default function TableActions({
 			</table>
 		</div>
 	) : null
+
 }

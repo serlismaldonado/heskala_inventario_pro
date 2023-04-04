@@ -11,10 +11,10 @@ export default function Modal({ modalState, changeState, children }) {
 		setModalOpen(modalState)
 	}, [modalState])
 
-	const closeModal = () => {
-		setModalOpen(false)
-		changeModalState(false)
-	}
+	// const closeModal = () => {
+	// 	setModalOpen(false)
+	// 	changeModalState(false)
+	// }
 
 	return (
 		<>
@@ -22,7 +22,6 @@ export default function Modal({ modalState, changeState, children }) {
 				<div className=''>
 					<div className=''>
 						{children}
-						<button onClick={closeModal}>Cerrar</button>
 					</div>
 				</div>
 			) : null}

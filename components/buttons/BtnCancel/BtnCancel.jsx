@@ -10,7 +10,7 @@ export default function BtnCancel(props) {
 					'px-4 py-2 rounded-md text-gray-500 bg-gradient-to-tr from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300'
 				}
 				onClick={onClick}
-				type='submit'>
+				type='button'>
 				{children}
 			</button>
 		</div>

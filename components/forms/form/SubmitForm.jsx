@@ -2,7 +2,7 @@ import style from './style.module.css'
 import BtnSubmit from '@/components/buttons/BtnSubmit/BtnSubmit'
 import BtnCancel from '@/components/buttons/BtnCancel/BtnCancel'
 export default function SubmitForm(props) {
-	const { onSubmit, title, description, cta, style, children } = props
+	const { onSubmit, onCancel,title, description, cta, style, children } = props
 
 	return (
 		<div className={'p-2 ' + style}>
@@ -13,7 +13,7 @@ export default function SubmitForm(props) {
 				</div>
 				{children}
 				<div className={'flex gap-3 pt-2 justify-end'}>
-					<BtnCancel>Cancelar</BtnCancel>
+					<BtnCancel onClick={onCancel}>Cancelar</BtnCancel>
 					<BtnSubmit onClick={onSubmit}>{cta}</BtnSubmit>
 				</div>
 			</form>

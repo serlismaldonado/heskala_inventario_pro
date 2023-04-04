@@ -4,6 +4,7 @@ import TableActions from '../tables/TableActions/TableActions'
 import { useMemo, useState, useEffect } from 'react'
 import { Suspense } from 'react'
 import LoadingSpinner from '../utils/LoadingSpinner'
+import ProductsModal from './ProductModal'
 
 export default function ProductTable({
 	children,
@@ -17,7 +18,8 @@ export default function ProductTable({
 	const [branch, setBranch] = useState(selectedBranch)
 	const [filterField, setFilterField] = useState('id')
 	const [condition, setCondition] = useState('')
-
+	const [isShowed, setIsShowed] = useState(false)
+	const [action, setAction] = useState('')
 	// Obtiene los productos de la sucursal seleccionada
 	useMemo(() => setBranch(selectedBranch), [selectedBranch])
 
@@ -30,7 +32,14 @@ export default function ProductTable({
 
 	// Obtiene los productos de la sucursal seleccionada por condición
 
-	const changeCondition = (e) => setCondition(e)
+	// const changeCondition = (condition) => {
+	// 	console.log('condition', condition)
+	// 	console.log('filter', filterField)
+	// 	console.log('branch', branch)
+	// 	getProductsByCondition(branch, condition, filterField).then((data) =>
+	// 		setProducts(data),
+	// 	)
+	// }
 	// Modifica el campo por el que se filtrará
 	const changeFilterField = (e) => setFilterField(e)
 
@@ -52,12 +61,18 @@ export default function ProductTable({
 				canCreate={canCreate}
 				canDelete={canDelete}
 				canUpdate={canUpdate}
-				getCondition={changeCondition}
+				getCondition={setCondition}
 				getFilterField={changeFilterField}
+				isShowed = {isShowed}
+				setIsShowed = {setIsShowed}
+				action = {action}
+				setAction = {setAction}
 			/>
+			<ProductsModal action={action} modalState={isShowed} changeState={setIsShowed} />
 		</Suspense>
 	)
 }
+
 // Obtiene los productos de la sucursal seleccionada
 async function getProducts(branch_id) {
 	// Crea la ruta para obtener los productos de la sucursal seleccionada
@@ -81,12 +96,12 @@ async function getProducts(branch_id) {
 }
 // Obtiene los productos de la sucursal seleccionada por condición
 async function getProductsByCondition(branch_id, condition, filterField) {
-	console.log(
-		'ejecutando getProductsByCondition',
-		branch_id,
-		condition,
-		filterField,
-	)
+	// console.log(
+	// 	'ejecutando getProductsByCondition',
+	// 	branch_id,
+	// 	condition,
+	// 	filterField,
+	// )
 	filterField = filterField === '' ? 'id' : filterField
 
 	if (condition === '' || branch_id === '') return getProducts(branch_id)
@@ -111,3 +126,4 @@ async function getProductsByCondition(branch_id, condition, filterField) {
 
 	return _mapProducts
 }
+

@@ -84,11 +84,11 @@ export default function Productos({ children, userPreferences, sessionUser }) {
 					</div>
 				</Suspense>
 
-				<div>
+				{/* <div> */}
 					{/* Se configura botón para mostrar un Modal */}
-					<button onClick={() => setIsShowed(true)}>Abrir modal</button>
-					<ProductModal modalState={isShowed} changeState={setIsShowed} />
-				</div>
+					{/* <button onClick={() => setIsShowed(true)}>Abrir modal</button>
+					<ProductsModal action='' modalState={isShowed} changeState={setIsShowed} /> */}
+				{/* </div> */}
 			</PrivateLayout>
 		</div>
 	)
