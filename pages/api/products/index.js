@@ -5,6 +5,7 @@ export default async function handler(req, res) {
         try {
             const prisma = new PrismaClient()
             const products = await prisma.product.findMany()
+            prisma.$disconnect()
             res.status(200).json(products)
         } catch (error) {
             res.status(500).json({ error: error.message })
@@ -18,6 +19,7 @@ export default async function handler(req, res) {
         const product = await prisma.product.create({
             data: req.body
         })
+        prisma.$disconnect()
         res.status(200).json(product)   
     }
 
@@ -29,17 +31,26 @@ export default async function handler(req, res) {
             },
             data: req.body
         })
+        prisma.$disconnect()
         res.status(200).json(product)   
     }
 
     if (req.method === 'DELETE') {
+        const items = req.body
         const prisma = new PrismaClient()
-        const product = await prisma.product.delete({
-            where: {
-                id: String(req.body.id)
-            }
-        })
-        res.status(200).json(product)   
+        if (items.length > 0) {
+            const product = await prisma.product.deleteMany({
+                where: {
+                    id: {
+                        in: items
+                    }
+                }
+            })
+
+            prisma.$disconnect()
+            res.status(200).json(product)   
+        }
+      
     }
 }
 

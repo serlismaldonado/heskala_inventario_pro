@@ -1,10 +1,16 @@
+// Componentes de pagina requeridos
 import Layout from '../../components/layouts/NavBarLayout'
 import NestedLayout from '@/components/layouts/NestedLayout'
-import ProductTable from '@/components/productos/ProductTable'
-import { useState, useEffect, Suspense } from 'react'
-import ProductVersionTable from '@/components/productos/ProductVersionsTable'
 import PrivateLayout from '@/components/layouts/PrivateLayout'
+
+// Componentes específicos de la pagina
 import LoadingSpinner from '@/components/utils/LoadingSpinner'
+import ProductVersionTable from '@/components/productos/ProductVersionsTable'
+import ProductTable from '@/components/productos/ProductTable'
+import ProductModal from '@/components/productos/ProductModal'
+
+// hooks y middlewares
+import { useState, useEffect, Suspense, useMemo } from 'react'
 import { useSession } from 'next-auth/react'
 import { validateUserSession } from '@/middlewares/auth'
 
@@ -13,10 +19,10 @@ export default function Productos({ children, userPreferences, sessionUser }) {
 	const [role, setRole] = useState(userPreferences.role.name || {})
 	const [productTable, setProductTable] = useState([])
 	const [user, setUser] = useState({})
-
 	const [selectedBranch, setSelectBranch] = useState(
 		userPreferences.branches[0].id,
 	)
+	const [isShowed, setIsShowed] = useState(false)
 
 	const changeBrandSelected = (e) => setSelectBranch(e)
 
@@ -49,9 +55,13 @@ export default function Productos({ children, userPreferences, sessionUser }) {
 
 	const { data: session, status } = useSession()
 
-	useEffect(() => {
+	useMemo(() => {
 		if (session) setUser(session.user)
 	}, [session])
+
+	useMemo(() => {
+		console.log('isShowed', isShowed)
+	}, [isShowed])
 
 	if (status === 'loading') {
 		return <LoadingSpinner />
@@ -73,6 +83,12 @@ export default function Productos({ children, userPreferences, sessionUser }) {
 						<div className='flex flex-col'>{productTable}</div>
 					</div>
 				</Suspense>
+
+				<div>
+					{/* Se configura botón para mostrar un Modal */}
+					<button onClick={() => setIsShowed(true)}>Abrir modal</button>
+					<ProductModal modalState={isShowed} changeState={setIsShowed} />
+				</div>
 			</PrivateLayout>
 		</div>
 	)

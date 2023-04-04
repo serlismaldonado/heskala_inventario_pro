@@ -1,8 +1,9 @@
+// Obtiene TODOS los PRODUCTOS de una SUCURSAL(branch_id) en específico
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 export default async function handler(req, res) {
     const { branch_id } = req.query
-   
+   // Validación de método GET
     if (req.method === 'GET' && branch_id) {
         try {
             const prisma = new PrismaClient()

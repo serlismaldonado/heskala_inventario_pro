@@ -5,7 +5,7 @@ import BtnIconDelete from '@/components/buttons/BtnDelete/BtnIconDelete'
 import BtnIconUpdate from '@/components/buttons/BtnUpdate/BtnIconUpdate'
 import InputText from '@/components/forms/input/InputText'
 import InputSelect from '@/components/forms/select/InputSelect'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 function TableHeader({ columns }) {
 	const [selectedRow, setSelectedRow] = useState('')
@@ -127,8 +127,13 @@ export default function TableActions({
 	const getParam = (data) => setParam(data)
 	const getField = (data) => setFilterField(data)
 
-	useEffect(() => getCondition(param), [param])
-	useEffect(() => getFilterField(filterField), [filterField])
+	useMemo(() => {
+		getCondition(param)
+	}, [param])
+
+	useMemo(() => {
+		getFilterField(filterField)
+	}, [filterField])
 
 	// Obtiene las columnas de la tabla
 	const columns = Object.keys(data[0] || [])

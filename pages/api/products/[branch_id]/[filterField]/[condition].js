@@ -3,10 +3,12 @@ const prisma = new PrismaClient()
 export default async function handler(req, res) {
     const { branch_id, condition, filterField } = req.query
 
+    // Configuración de filtro por campo
     const filterBy = new Object()
     filterBy[filterField] = { contains: String(condition) }
     filterBy['branch_id'] = String(branch_id)
-   
+    
+    // Validación de método GET
     if (req.method === 'GET' && branch_id && condition) {
         try {
             const prisma = new PrismaClient()

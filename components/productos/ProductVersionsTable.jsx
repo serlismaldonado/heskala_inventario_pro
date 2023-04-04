@@ -13,16 +13,13 @@ export default function ProductVersionTable({
 	const [branch, setBranch] = useState(selectedBranch.value)
 
 	// Obtiene los productos de la sucursal seleccionada
-	useEffect(() => {
-		getProducts(branch).then((data) => {
-			setProducts(data)
-		})
-	}, [branch])
+	useEffect(
+		() => getProducts(branch).then((data) => setProducts(data)),
+		[branch],
+	)
 
 	// Actualiza la sucursal seleccionada
-	useEffect(() => {
-		setBranch(selectedBranch)
-	}, [selectedBranch])
+	useEffect(() => setBranch(selectedBranch), [selectedBranch])
 
 	return (
 		<Suspense
@@ -54,14 +51,14 @@ async function getProducts(branch_id) {
 		},
 	)
 
-	// mapping witout ids
+	// Mapea los datos de los productos
 	const _mapProducts = await _products.json().then((data) => {
 		return data.map((product) => {
 			return {
-				nombre: product.name,
-				descripcion: product.description,
-				precio: product.purchase_price,
-				existencia: product.stock_quantity,
+				name: product.name,
+				description: product.description,
+				price: product.purchase_price,
+				stock_quantity: product.stock_quantity,
 			}
 		})
 	})
