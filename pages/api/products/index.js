@@ -16,6 +16,7 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
         const prisma = new PrismaClient()
         const { name, description,branch_id, brand_id} = req.body
+        console.log(req.body)
         const product = await prisma.product.create({
             data: req.body
         })

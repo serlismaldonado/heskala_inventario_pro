@@ -10,7 +10,7 @@ export default function BtnSubmit(props) {
 					' text-white font-bold py-2 px-4 rounded-md bg-gradient-to-tr from-violet-400 to-sky-500 hover:from-violet-500 hover:to-sky-600  '
 				}
 				onClick={() => onClick()}
-				type='button'>
+				type='submit'>
 				{children}
 			</button>
 		</div>
