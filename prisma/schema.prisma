@@ -88,14 +88,15 @@ model VerificationToken {
 }
 
 model UserPreferences {
-  id           String       @id @default(uuid())
-  theme        String
-  user_id      String       @unique
-  user         User         @relation(fields: [user_id], references: [id])
-  role         Role         @relation(fields: [role_id], references: [id])
-  role_id      String
-  user_actions UserAction[]
-  branches     Branch[]
+  id            String       @id @default(uuid())
+  theme         String
+  user_id       String       @unique
+  user          User         @relation(fields: [user_id], references: [id])
+  role          Role         @relation(fields: [role_id], references: [id])
+  role_id       String
+  user_actions  UserAction[]
+  branches      Branch[]
+  active_branch String       @default("")
 }
 
 model Role {

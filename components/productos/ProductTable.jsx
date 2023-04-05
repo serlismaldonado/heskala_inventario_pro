@@ -4,7 +4,7 @@ import TableActions from '../tables/TableActions/TableActions'
 import { useMemo, useState, useEffect } from 'react'
 import { Suspense } from 'react'
 import LoadingSpinner from '../utils/LoadingSpinner'
-import ProductsModal from './ProductModal'
+import ProductsModal from './crud/ProductModal'
 
 export default function ProductTable({
 	children,
@@ -15,40 +15,15 @@ export default function ProductTable({
 	canUpdate,
 }) {
 	const [_products, setProducts] = useState([])
-	const [branch, setBranch] = useState(selectedBranch)
 	const [filterField, setFilterField] = useState('id')
 	const [condition, setCondition] = useState('')
 	const [isShowed, setIsShowed] = useState(false)
 	const [action, setAction] = useState('')
-	// Obtiene los productos de la sucursal seleccionada
-	useMemo(() => setBranch(selectedBranch), [selectedBranch])
 
-	// Obtiene los productos de la sucursal seleccionada
-	useMemo(() => {
-		getProducts(branch).then((data) => {
-			setProducts(data)
-		})
-	}, [branch])
-
-	// Obtiene los productos de la sucursal seleccionada por condición
-
-	// const changeCondition = (condition) => {
-	// 	console.log('condition', condition)
-	// 	console.log('filter', filterField)
-	// 	console.log('branch', branch)
-	// 	getProductsByCondition(branch, condition, filterField).then((data) =>
-	// 		setProducts(data),
-	// 	)
-	// }
 	// Modifica el campo por el que se filtrará
-	const changeFilterField = (e) => setFilterField(e)
-
 	useMemo(() => {
-		console.log('condition', condition)
-		console.log('filter', filterField)
-		console.log('branch', branch)
-		getProductsByCondition(branch, condition, filterField).then((data) =>
-			setProducts(data),
+		getProductsByCondition(selectedBranch.value, condition, filterField).then(
+			(data) => setProducts(data),
 		)
 	}, [condition])
 
@@ -62,13 +37,18 @@ export default function ProductTable({
 				canDelete={canDelete}
 				canUpdate={canUpdate}
 				getCondition={setCondition}
-				getFilterField={changeFilterField}
-				isShowed = {isShowed}
-				setIsShowed = {setIsShowed}
-				action = {action}
-				setAction = {setAction}
+				getFilterField={setFilterField}
+				isShowed={isShowed}
+				setIsShowed={setIsShowed}
+				action={action}
+				setAction={setAction}
 			/>
-			<ProductsModal action={action} modalState={isShowed} changeState={setIsShowed} />
+			<ProductsModal
+				action={action}
+				modalState={isShowed}
+				changeState={setIsShowed}
+				branch={selectedBranch.value}
+			/>
 		</Suspense>
 	)
 }
@@ -96,12 +76,6 @@ async function getProducts(branch_id) {
 }
 // Obtiene los productos de la sucursal seleccionada por condición
 async function getProductsByCondition(branch_id, condition, filterField) {
-	// console.log(
-	// 	'ejecutando getProductsByCondition',
-	// 	branch_id,
-	// 	condition,
-	// 	filterField,
-	// )
 	filterField = filterField === '' ? 'id' : filterField
 
 	if (condition === '' || branch_id === '') return getProducts(branch_id)
@@ -126,4 +100,3 @@ async function getProductsByCondition(branch_id, condition, filterField) {
 
 	return _mapProducts
 }
-

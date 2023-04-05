@@ -2,7 +2,7 @@ import style from './style.module.css'
 import BtnSubmit from '@/components/buttons/BtnSubmit/BtnSubmit'
 import BtnCancel from '@/components/buttons/BtnCancel/BtnCancel'
 export default function SubmitForm(props) {
-	const { onSubmit, onCancel,title, description, cta, style, children } = props
+	const { onSubmit, onCancel, title, description, cta, style, children } = props
 
 	return (
 		<div className={'p-2 ' + style}>

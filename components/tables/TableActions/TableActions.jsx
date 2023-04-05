@@ -5,7 +5,7 @@ import BtnIconDelete from '@/components/buttons/BtnDelete/BtnIconDelete'
 import BtnIconUpdate from '@/components/buttons/BtnUpdate/BtnIconUpdate'
 import InputText from '@/components/forms/input/InputText'
 import InputSelect from '@/components/forms/select/InputSelect'
-import ProductsModal from '@/components/productos/ProductModal'
+import ProductsModal from '@/components/productos/crud/ProductModal'
 import { useState, useEffect, useMemo } from 'react'
 
 function TableHeader({ columns }) {
@@ -45,13 +45,13 @@ function TableBody({ data, columns }) {
 	useEffect(() => {}, [selectedRows])
 
 	return (
-		<tbody className='bg-transparent '>
+		<tbody className=' rounded-md'>
 			{data.length != 0 ? (
 				data.map((row, index) => (
 					<tr
-						className='bg-gray-100 border rounded hover:bg-gray-200'
+						className='bg-gray-50 border rounded hover:bg-gray-100 '
 						key={index}>
-						<td className='text-center text-gray-600 text-sm p-2'>
+						<td className='text-center text-gray-600 text-sm p-2 '>
 							<input
 								type='checkbox'
 								name=''
@@ -108,7 +108,7 @@ export default function TableActions({
 	isShowed,
 	setIsShowed,
 	action,
-	setAction
+	setAction,
 }) {
 	// Estados de los permisos de CRUD para la tabla (por defecto false)
 	const [canReadState, setCanReadState] = useState(canRead || +false)
@@ -130,19 +130,24 @@ export default function TableActions({
 	const getField = (data) => setFilterField(data)
 
 	//Funciones para manejar estados de modal
-	const onClickCreate = () => {setIsShowed(true)
-			setAction('Create')} 
-	const onClickDelete = () => {setIsShowed(true)
-			setAction('Delete')} 
-	const onClickUpdate = () =>{setIsShowed(true)
-			setAction('Update')} 
+	const onClickCreate = () => {
+		setIsShowed(true)
+		setAction('Create')
+	}
+	const onClickDelete = () => {
+		setIsShowed(true)
+		setAction('Delete')
+	}
+	const onClickUpdate = () => {
+		setIsShowed(true)
+		setAction('Update')
+	}
 
-
-	useMemo(() => {
+	useEffect(() => {
 		getCondition(param)
 	}, [param])
 
-	useMemo(() => {
+	useEffect(() => {
 		getFilterField(filterField)
 	}, [filterField])
 
@@ -151,7 +156,7 @@ export default function TableActions({
 
 	// Retorna la tabla si se puede leer
 	return canReadState ? (
-		<div className='w-full flex gap-3 flex-col bg-slate-50 p-5 shadow-md'>
+		<div className='w-full flex gap-3 flex-col bg-white rounded-md p-5 shadow-md'>
 			<div className='flex gap-2'>
 				<InputText
 					name='buscar'
@@ -190,5 +195,4 @@ export default function TableActions({
 			</table>
 		</div>
 	) : null
-
 }

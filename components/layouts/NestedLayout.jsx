@@ -3,7 +3,6 @@ import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import ProfileAvatar from '@/components/profile/ProfileAvatar'
-import InputSelect from '@/components/forms/select/InputSelect'
 import LoadingSpinner from '../utils/LoadingSpinner'
 
 export default function NestedLayout({
@@ -11,7 +10,6 @@ export default function NestedLayout({
 	userPreferences,
 	sessionUser,
 	selectedBranch,
-	setSelectBranch,
 }) {
 	const router = useRouter()
 
@@ -21,18 +19,6 @@ export default function NestedLayout({
 		lastName: '',
 		email: '',
 	})
-	const [branches, setBranches] = useState([])
-
-	// Actualiza el arreglo de sucursales
-	useEffect(() => {
-		if (userPreferences) {
-			setBranches(
-				userPreferences.branches.map((e) => {
-					return { value: e.id, label: e.name }
-				}),
-			)
-		}
-	}, [userPreferences])
 
 	// Actualiza el usuario cuando se actualiza la sesión
 	useEffect(() => {
@@ -56,11 +42,7 @@ export default function NestedLayout({
 				<h1 className='text-4xl font-bold text-center text-sky-700'>Heskala</h1>
 
 				{/* Selector de Sucursales */}
-				<InputSelect
-					className='w-40'
-					options={branches}
-					passData={(e) => setSelectBranch(e)}
-					defaultValue={selectedBranch}></InputSelect>
+				{selectedBranch.value}
 				<h2 className='text-2xl font-bold self-center text-sky-600'>{title}</h2>
 			</div>
 			{/* Seccion de datos de usuario */}

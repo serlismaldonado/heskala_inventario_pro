@@ -2,11 +2,6 @@ import { useState, useMemo } from 'react'
 export default function Modal({ modalState, changeState, children }) {
 	const [modalOpen, setModalOpen] = useState(false)
 
-	const changeModalState = (state) => {
-		setModalOpen(state)
-		changeState(state)
-	}
-
 	useMemo(() => {
 		setModalOpen(modalState)
 	}, [modalState])
@@ -20,9 +15,7 @@ export default function Modal({ modalState, changeState, children }) {
 		<>
 			{modalOpen ? (
 				<div className=''>
-					<div className=''>
-						{children}
-					</div>
+					<div className=''>{children}</div>
 				</div>
 			) : null}
 		</>

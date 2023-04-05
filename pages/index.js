@@ -10,16 +10,13 @@ import { useSession } from 'next-auth/react'
 export default function Inicio({ children, userPreferences, sessionUser }) {
 
 	const [selectedBranch, setSelectBranch] = useState({
-		value: userPreferences.branches[0].id,
-		label: userPreferences.branches[0].name,
+		value: userPreferences.preference.active_branch,
+		label: "Default",
 	})
 
 	const { data: session, status } = useSession()
 
-	const changeBrandSelected = (e) => {
-		setSelectBranch(e)
-	}
-
+	
 	if (status === 'loading') {
 		return <LoadingSpinner />
 	}
@@ -30,7 +27,7 @@ export default function Inicio({ children, userPreferences, sessionUser }) {
 					userPreferences={userPreferences}
 					sessionUser={sessionUser}
 					selectedBranch={selectedBranch}
-					setSelectBranch={changeBrandSelected}
+					
 				/>
 		
 		</PrivateLayout></Suspense>

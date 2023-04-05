@@ -16,6 +16,7 @@ export default async function handler(req, res) {
                 take: 10,
                 where: filterBy,
             })
+            prisma.$disconnect()
             res.status(200).json(products)
         } catch (error) {
             res.status(500).json({ error: error.message })

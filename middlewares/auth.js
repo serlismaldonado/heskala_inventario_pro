@@ -27,21 +27,27 @@ export async function validateUserSession(context) {
 			},
 		}
 	}
-	const _userPreferences = await prisma.userPreferences.findFirst({
+
+	const _preferences = await prisma.user.findUnique({
 		where: {
-			user_id: session.user.id,
+			email: session.user.email,
 		},
 		include: {
-			role: {
-				include: {
-					tables: true,
-				},
-			},
-			branches: true,
-		},
+			preference: true
+		}
 	})
 
-	
+	const _rol = await prisma.role.findUnique({
+		where: {
+			id: _preferences.preference.role_id,
+		},
+		include: {
+			tables:true
+		}
+	})
+	const _userPreferences = { ..._preferences, ..._rol }
+	console.log(_userPreferences)
+	prisma.$disconnect()
 	
 	return {
 		props: { userPreferences: JSON.parse(JSON.stringify(_userPreferences)), sessionUser: session.user },

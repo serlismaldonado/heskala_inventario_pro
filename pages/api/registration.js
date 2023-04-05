@@ -33,6 +33,7 @@ export default async function handler(req, res) {
                 company_id: company_id,
             },
         })
+        prisma.$disconnect()
         return res.status(200).json({ user })
     }
 }

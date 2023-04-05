@@ -7,8 +7,8 @@ import { validateUserSession } from '@/middlewares/auth'
 
 export default function Facturas({ children, userPreferences, sessionUser }) {
 	const [selectedBranch, setSelectBranch] = useState({
-		value: userPreferences.branches[0].id,
-		label: userPreferences.branches[0].name,
+		value: userPreferences.preference.active_branch,
+		label: 'Default',
 	})
 
 	const changeBrandSelected = (e) => {
@@ -21,8 +21,7 @@ export default function Facturas({ children, userPreferences, sessionUser }) {
 				<NestedLayout
 					userPreferences={userPreferences}
 					sessionUser={sessionUser}
-					selectedBranch={selectedBranch}
-					setSelectBranch={changeBrandSelected}>
+					selectedBranch={selectedBranch}>
 					{children}
 				</NestedLayout>
 			</Layout>

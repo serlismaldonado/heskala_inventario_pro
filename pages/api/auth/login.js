@@ -46,7 +46,7 @@ export default async function handler(req, res) {
     res.setHeader("Set-Cookie", [
       `next-auth.session-token=${token}; path=/; httponly`,
     ])
-    
+    prisma.$disconnect
     return res.status(200).json(user)
   }
 }
