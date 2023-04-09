@@ -29,7 +29,7 @@ function TableHeader({ columns }) {
 	)
 }
 
-function TableBody({ data, columns }) {
+function TableBody({ data, columns, setSelectedIds }) {
 	const [selectedRows, setSelectedRows] = useState([])
 
 	const handleSelectRow = (e) => {
@@ -42,7 +42,9 @@ function TableBody({ data, columns }) {
 		}
 	}
 
-	useEffect(() => {}, [selectedRows])
+	useEffect(() => {
+		setSelectedIds(selectedRows)
+	}, [selectedRows])
 
 	return (
 		<tbody className=' rounded-md'>
@@ -109,6 +111,7 @@ export default function TableActions({
 	setIsShowed,
 	action,
 	setAction,
+	setSelectedIds,
 }) {
 	// Estados de los permisos de CRUD para la tabla (por defecto false)
 	const [canReadState, setCanReadState] = useState(canRead || +false)
@@ -168,6 +171,7 @@ export default function TableActions({
 				<InputSelect
 					name='rol'
 					label='Rol'
+					defaultValue='id'
 					options={columns.map((column) => ({
 						value: column,
 						label:
@@ -190,6 +194,7 @@ export default function TableActions({
 					canUpdate={canUpdateState}
 					canDelete={canDeleteState}
 					canCreate={canCreateState}
+					setSelectedIds={setSelectedIds}
 				/>
 				<TableFooter data={data} columns={columns} />
 			</table>

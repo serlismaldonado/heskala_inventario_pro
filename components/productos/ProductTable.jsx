@@ -5,6 +5,7 @@ import { useMemo, useState, useEffect } from 'react'
 import { Suspense } from 'react'
 import LoadingSpinner from '../utils/LoadingSpinner'
 import ProductsModal from './crud/ProductModal'
+import SuccessAlert from '../Alerts/SuccessAlert'
 
 export default function ProductTable({
 	children,
@@ -19,13 +20,19 @@ export default function ProductTable({
 	const [condition, setCondition] = useState('')
 	const [isShowed, setIsShowed] = useState(false)
 	const [action, setAction] = useState('')
+	const [selectedIds, setSelectedIds] = useState([])
 
 	// Modifica el campo por el que se filtrará
 	useMemo(() => {
 		getProductsByCondition(selectedBranch.value, condition, filterField).then(
 			(data) => setProducts(data),
 		)
-	}, [condition])
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [condition, action, selectedBranch, filterField])
+
+	useMemo(() => {
+		console.log(selectedIds)
+	}, [selectedIds])
 
 	return (
 		// Envuelve el componente TableActions en un Suspense para mostrar un spinner mientras se obtienen los datos
@@ -42,12 +49,17 @@ export default function ProductTable({
 				setIsShowed={setIsShowed}
 				action={action}
 				setAction={setAction}
+				setSelectedIds={setSelectedIds}
 			/>
 			<ProductsModal
 				action={action}
 				modalState={isShowed}
 				changeState={setIsShowed}
 				branch={selectedBranch.value}
+				selectedIds={selectedIds}
+				setAction={setAction}
+				refreshProducts={getProductsByCondition}
+				setSelectedIds={setSelectedIds}
 			/>
 		</Suspense>
 	)
@@ -78,10 +90,13 @@ async function getProducts(branch_id) {
 async function getProductsByCondition(branch_id, condition, filterField) {
 	filterField = filterField === '' ? 'id' : filterField
 
-	if (condition === '' || branch_id === '') return getProducts(branch_id)
+	if (String(condition).trim() === '' || String(branch_id).trim() === '')
+		return getProducts(branch_id)
 	// Crea la ruta para obtener los productos de la sucursal seleccionada por condición
 
-	const route = `http://localhost:3000/api/products/${branch_id}/${filterField}/${condition}`
+	const route = `http://localhost:3000/api/products/${branch_id}/${String(
+		filterField,
+	).trim()}/${String(condition).trim()}`
 
 	const _products = await fetch(route, {
 		method: 'GET',

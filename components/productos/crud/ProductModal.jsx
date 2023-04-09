@@ -1,44 +1,118 @@
 import Modal from 'components/modal/ModalActions'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import ProductCreateForm from './ProductCreateForm'
+import ProductUpdateForm from './ProductUpdateForm'
+import ProductDeleteForm from './ProductDeleteForm'
+import WarningAlert from '@/components/Alerts/WarningAlert'
 
 export default function ProductsModal({
 	action,
+	setAction,
 	children,
 	modalState,
 	changeState,
+	selectedIds,
+	refreshProducts,
+	setSelectedIds,
 }) {
 	// const [modalAction, setModalAction] = useState('')
 	const [selectedForm, setSelectedForm] = useState('')
 	const [branches, setBranches] = useState([])
 	const [brands, setBrands] = useState([])
-	const closeModal = () => changeState(false)
+	const [product, setProduct] = useState({})
 
+	// Cierra el modal y limpia los datos seleccionados y la acción a realizar
+	const closeModal = () => {
+		setAction('')
+		changeState(false)
+	}
+
+	// Obtiene los datos de las sucursales y las marcas
 	useEffect(() => {
-		setSelectedForm(refreshSelectedForm(action))
 		getBranches().then((data) => setBranches(data))
 		getBrands().then((data) => setBrands(data))
+	}, [])
+
+	// Evalúa la acción a realizar y muestra el formulario correspondiente
+	useEffect(() => {
+		if (action === 'Create') {
+			getBranches().then((data) => setBranches(data))
+			getBrands().then((data) => setBrands(data))
+			setSelectedForm(refreshSelectedForm(action))
+		}
+		if (action === 'Update' && selectedIds.length > 0) {
+			getBranches().then((data) => setBranches(data))
+			getBrands().then((data) => setBrands(data))
+			setSelectedForm(refreshSelectedForm(action))
+		}
+
+		if (action === 'Delete' && selectedIds.length > 0)
+			setSelectedForm(refreshSelectedForm(action))
+
+		if (action === '')
+			setSelectedForm(
+				<WarningAlert content='No ha seleccionado ningún elemento.' />,
+			)
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [action])
 
-	const refreshSelectedForm = (action) => {
-		if (action === 'Create')
-			return (
-				<ProductCreateForm
-					closeModal={closeModal}
-					branches={branches}
-					brands={brands}
-				/>
-			)
-	}
-	return modalState ? (
-		<div className='fixed top-0 left-0 z-[1055]  flex items-center justify-center bg-black bg-opacity-80 h-full w-full overflow-y-auto overflow-x-hidden outline-none'>
-			<Modal modalState={modalState} changeState={changeState}>
-				{selectedForm}
-			</Modal>
-		</div>
-	) : null
-}
+	// Obtiene el ultimo id seleccionado
+	useEffect(() => {
+		getProduct(selectedIds[selectedIds.length - 1]).then((data) =>
+			setProduct(data),
+		)
+		closeModal()
+	}, [selectedIds])
 
+	// Refresca el formulario seleccionado según la acción
+	const refreshSelectedForm = (action) => {
+		if (action === 'Create') {
+			return (
+				<div className='fixed top-0 left-0 z-[1055]  flex items-center justify-center bg-black bg-opacity-80 h-full w-full overflow-y-auto overflow-x-hidden outline-none'>
+					<Modal modalState={modalState} changeState={changeState}>
+						<ProductCreateForm
+							closeModal={closeModal}
+							branches={branches}
+							brands={brands}
+						/>
+					</Modal>
+				</div>
+			)
+		}
+		if (action === 'Update' && selectedIds.length > 0) {
+			return (
+				<div className='fixed top-0 left-0 z-[1055]  flex items-center justify-center bg-black bg-opacity-80 h-full w-full overflow-y-auto overflow-x-hidden outline-none'>
+					<Modal modalState={modalState} changeState={changeState}>
+						<ProductUpdateForm
+							closeModal={closeModal}
+							branches={branches}
+							brands={brands}
+							product={product}
+							refreshProducts={refreshProducts}
+						/>
+					</Modal>
+				</div>
+			)
+		}
+		if (action === 'Delete' && selectedIds.length > 0) {
+			return (
+				<div className='fixed top-0 left-0 z-[1055]  flex items-center justify-center bg-black bg-opacity-80 h-full w-full overflow-y-auto overflow-x-hidden outline-none'>
+					<Modal modalState={modalState} changeState={changeState}>
+						<ProductDeleteForm
+							products={selectedIds}
+							refreshProducts={refreshProducts}
+							closeModal={closeModal}
+						/>
+					</Modal>
+				</div>
+			)
+		}
+	}
+	// Retorna el formulario seleccionado
+	if (modalState === true && action !== '') return selectedForm
+}
+// Obtiene las sucursales
 const getBranches = async () => {
 	const res = await fetch('http://localhost:3000/api/branches', {
 		method: 'GET',
@@ -55,7 +129,7 @@ const getBranches = async () => {
 
 	return mapBranches
 }
-
+// Obtiene las marcas
 const getBrands = async () => {
 	const res = await fetch('http://localhost:3000/api/brands', { method: 'GET' })
 	const mapBrands = await res.json().then((data) => {
@@ -67,4 +141,13 @@ const getBrands = async () => {
 		})
 	})
 	return mapBrands
+}
+// Obtiene el producto seleccionado
+const getProduct = async (id) => {
+	const res = await fetch(`http://localhost:3000/api/products/crud/${id}`, {
+		method: 'GET',
+	})
+	const data = await res.json()
+	console.log(data)
+	return data
 }

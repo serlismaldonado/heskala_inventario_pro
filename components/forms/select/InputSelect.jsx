@@ -2,11 +2,10 @@ import style from './style.module.css'
 import { useState, useEffect } from 'react'
 export default function InputSelect(props) {
 	const { placeholder, type, options, passData, defaultValue } = props
+	const [selectedOption, setSelectedOption] = useState(defaultValue)
 
-	const [selectedOption, setSelectedOption] = useState('')
 	useEffect(() => passData(selectedOption), [selectedOption])
 
-	console.log(options)
 	return (
 		<div>
 			<select
@@ -14,7 +13,7 @@ export default function InputSelect(props) {
 				onChange={(e) => {
 					setSelectedOption(e.target.value)
 				}}
-				value={selectedOption}
+				defaultValue={selectedOption}
 				placeholder={placeholder}
 				type={type}>
 				{options.map((option) => (

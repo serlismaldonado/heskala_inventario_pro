@@ -37,9 +37,23 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'DELETE') {
-        const items = req.body
+        const items = req.body.products
+        console.log(items)
         const prisma = new PrismaClient()
         if (items.length > 0) {
+
+            const productVersrions = await prisma.productVersion.deleteMany({
+                where: {
+                    product_id: {
+                        in: items
+                    }
+                }
+            }).then((data) => {
+                console.log(data)
+            })
+
+
+
             const product = await prisma.product.deleteMany({
                 where: {
                     id: {
@@ -50,6 +64,10 @@ export default async function handler(req, res) {
 
             prisma.$disconnect()
             res.status(200).json(product)   
+        }
+
+        if (items.length === 0) {
+            res.status(200).json({message: 'No hay productos seleccionados'})   
         }
       
     }

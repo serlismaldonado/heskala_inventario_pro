@@ -1,8 +1,9 @@
 import style from './style.module.css'
 import { useState, useEffect } from 'react'
 export default function InputText(props) {
-	const { onChange, placeholder, type, required, passData } = props
-	const [value, setValue] = useState('')
+	const { onChange, defaultValue, placeholder, type, required, passData } =
+		props
+	const [value, setValue] = useState(defaultValue || '')
 	const [pattern, setPattern] = useState('')
 
 	useEffect(() => passData(value), [value])
