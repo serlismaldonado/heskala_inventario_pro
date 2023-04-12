@@ -4,6 +4,7 @@ import SubmitForm from '@/components/forms/form/SubmitForm'
 import BtnCancel from '@/components/buttons/BtnCancel/BtnCancel'
 import InputSelect from '@/components/forms/select/InputSelect'
 import InputText from '@/components/forms/input/InputText'
+import WarningAlert from '@/components/Alerts/WarningAlert'
 export default function ProductCreateForm({ closeModal, branches, brands }) {
 	const [name, setName] = useState('')
 	const [description, setDescription] = useState('')
@@ -40,8 +41,6 @@ export default function ProductCreateForm({ closeModal, branches, brands }) {
 				return
 			}
 		}
-
-		return
 	}
 
 	return (
@@ -53,11 +52,17 @@ export default function ProductCreateForm({ closeModal, branches, brands }) {
 				onSubmit={saveProduct}
 				onCancel={closeModal}
 				cta='Guardar'>
-				<InputText placeholder='Nombre' type='text' passData={getName} />
+				<InputText
+					placeholder='Nombre'
+					type='text'
+					passData={getName}
+					required={true}
+				/>
 				<InputText
 					placeholder='Descripcion'
 					type='text'
 					passData={getDescription}
+					required={true}
 				/>
 				<InputSelect
 					placeholder='Sucursal'
