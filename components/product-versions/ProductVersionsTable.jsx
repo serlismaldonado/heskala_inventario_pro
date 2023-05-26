@@ -4,7 +4,7 @@ import TableActions from '../tables/TableActions/TableActions'
 import { useMemo, useState, useEffect } from 'react'
 import { Suspense } from 'react'
 import LoadingSpinner from '../utils/LoadingSpinner'
-import ProductsModal from './crud/ProductModal'
+import ProductsVersionModal from './crud/ProductVersionsModal'
 import SuccessAlert from '../Alerts/SuccessAlert'
 
 export default function ProductTable({
@@ -51,7 +51,7 @@ export default function ProductTable({
 				setAction={setAction}
 				setSelectedIds={setSelectedIds}
 			/>
-			<ProductsModal
+			<ProductsVersionModal
 				action={action}
 				modalState={isShowed}
 				changeState={setIsShowed}
@@ -64,37 +64,38 @@ export default function ProductTable({
 		</Suspense>
 	)
 }
+async function getProductVersions(branch_id) {
+	const _products = await fetch(
+		`http://localhost:3000/api/productversions/${branch_id}`,
+		{
+			method: 'GET',
+		},
+	)
 
-// Obtiene los productos de la sucursal seleccionada
-async function getProducts(branch_id) {
-	// Crea la ruta para obtener los productos de la sucursal seleccionada
-	const route = `http://localhost:3000/api/products/${branch_id}`
-	const _products = await fetch(route, {
-		method: 'GET',
-	})
-
-	// Mapea los datos para que coincidan con los nombres de las columnas de la tabla
+	// Mapea los datos de los productos
 	const _mapProducts = await _products.json().then((data) => {
 		return data.map((product) => {
 			return {
 				id: product.id,
 				name: product.name,
 				description: product.description,
+				price: Number(product.purchase_price),
+				stock_quantity: Number(product.stock_quantity),
 			}
 		})
 	})
 
 	return _mapProducts
 }
-// Obtiene los productos de la sucursal seleccionada por condición
+
 async function getProductsByCondition(branch_id, condition, filterField) {
 	filterField = filterField === '' ? 'id' : filterField
 
 	if (String(condition).trim() === '' || String(branch_id).trim() === '')
-		return getProducts(branch_id)
+		return getProductVersions(branch_id)
 	// Crea la ruta para obtener los productos de la sucursal seleccionada por condición
 
-	const route = `http://localhost:3000/api/products/${branch_id}/${String(
+	const route = `http://localhost:3000/api/productversions/${branch_id}/${String(
 		filterField,
 	).trim()}/${String(condition).trim()}`
 
@@ -109,6 +110,8 @@ async function getProductsByCondition(branch_id, condition, filterField) {
 				id: product.id,
 				name: product.name,
 				description: product.description,
+				price: Number(product.purchase_price),
+				stock_quantity: Number(product.stock_quantity),
 			}
 		})
 	})

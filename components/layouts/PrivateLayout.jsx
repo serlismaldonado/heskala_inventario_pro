@@ -14,7 +14,7 @@ export default function PrivateLayout({ children }) {
 	if (status === 'loading') return <LoadingSpinner />
 	if (!session) router.push('/login')
 
-	return <div className='flex flex-col '>{children}</div>
+	return <div className='flex flex-col h-screen'>{children}</div>
 }
 
 export async function getServerSideProps(context) {

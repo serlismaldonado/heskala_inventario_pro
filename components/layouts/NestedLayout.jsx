@@ -36,13 +36,13 @@ export default function NestedLayout({
 	if (status === 'loading') return <LoadingSpinner />
 
 	return (
-		<div className='container-full w-screen flex flex-row gap-5 p-5 bg-slate-100 justify-between'>
+		<div className=' overscroll-contain flex flex-row gap-5 p-5 bg-slate-100 justify-between'>
 			<div className='flex gap-5 items-center'>
 				{/* Titulo superior de la aplicacion */}
 				<h1 className='text-4xl font-bold text-center text-sky-700'>Heskala</h1>
 
 				{/* Selector de Sucursales */}
-				{selectedBranch.value}
+				{/* {selectedBranch.value} */}
 				<h2 className='text-2xl font-bold self-center text-sky-600'>{title}</h2>
 			</div>
 			{/* Seccion de datos de usuario */}

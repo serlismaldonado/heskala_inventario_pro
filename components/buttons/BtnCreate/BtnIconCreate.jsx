@@ -8,6 +8,7 @@ export default function BtnIconCreate(props) {
 	return (
 		<div>
 			<button
+				type='button'
 				className='p-1 rounded-md flex gap-1 items-center text-sky-300  hover:text-sky-400'
 				onClick={onClick}>
 				<FontAwesomeIcon icon={faPlus} />

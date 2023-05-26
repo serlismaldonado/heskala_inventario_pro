@@ -12,7 +12,7 @@ export default function InputSelect(props) {
 	useEffect(() => passData(selectedOption), [selectedOption])
 
 	return (
-		<div>
+		<div className='w-full'>
 			<select
 				className={style.input_select}
 				onChange={(e) => {

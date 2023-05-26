@@ -1,8 +1,16 @@
 // import style from './style.module.css'
 import { useState, useEffect } from 'react'
 export default function InputText(props) {
-	const { onChange, defaultValue, placeholder, type, required, passData } =
-		props
+	const {
+		onChange,
+		defaultValue,
+		placeholder,
+		type,
+		required,
+		passData,
+		cleaner,
+		setCleaner,
+	} = props
 	const [value, setValue] = useState(defaultValue || '')
 	const [pattern, setPattern] = useState('')
 	const [isRequired, setIsRequired] = useState(required || false)
@@ -14,7 +22,13 @@ export default function InputText(props) {
 	})
 
 	useEffect(() => passData(value), [value])
-
+	useEffect(() => {
+		if (cleaner) {
+			clear()
+			setCleaner(false)
+		}
+	}, [cleaner])
+	const clear = () => setValue('')
 	useEffect(() => {
 		if (type === 'email') {
 			setPattern('[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$')
@@ -40,7 +54,7 @@ export default function InputText(props) {
 	}, [type])
 
 	return (
-		<div className='flex flex-col gap-0 m-0'>
+		<div className='flex flex-col gap-0 m-0 w-full'>
 			<input
 				className={
 					isRequired && value === '' ? style.input_text_error : style.input_text

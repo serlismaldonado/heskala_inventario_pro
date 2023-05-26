@@ -1,11 +1,13 @@
 import getPrismaClient from "@/middlewares/prisma_client"
-const prisma = await getPrismaClient()
+
 
 export default async function handler(req, res) {
     if (req.method === 'GET' ) {
         try {
+            const prisma = await getPrismaClient()
             const products = await prisma.product.findMany()
             prisma.$disconnect()
+            console.log(products)
             res.status(200).json(products)
         } catch (error) {
             res.status(500).json({ error: error.message })
@@ -14,7 +16,7 @@ export default async function handler(req, res) {
 
 
     if (req.method === 'POST') {
-    
+        const prisma = await getPrismaClient()
         const { name, description,branch_id, brand_id} = req.body
         console.log(req.body)
         const product = await prisma.product.create({
@@ -25,7 +27,7 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'PUT') {
-        
+        const prisma = await getPrismaClient()
         const product = await prisma.product.update({
             where: {
                 id: String(req.body.id)
@@ -39,7 +41,7 @@ export default async function handler(req, res) {
     if (req.method === 'DELETE') {
         const items = req.body.products
         console.log(items)
-        
+        const prisma = await getPrismaClient()
         if (items.length > 0) {
 
             const productVersions = await prisma.productVersion.deleteMany({

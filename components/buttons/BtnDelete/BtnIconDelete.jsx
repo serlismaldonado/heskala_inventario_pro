@@ -9,6 +9,7 @@ export default function BtnIconDelete(props) {
 		<div>
 			<button
 				className=' p-1 rounded-md flex gap-1 items-center text-red-300 hover:text-red-400'
+				type='button'
 				onClick={onClick}>
 				<FontAwesomeIcon icon={faTrash} />
 				{children}

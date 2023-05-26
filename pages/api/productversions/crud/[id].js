@@ -1,12 +1,13 @@
 // Obtiene TODOS los PRODUCTOS de una SUCURSAL(branch_id) en específico
-import getPrismaClient from "@/middlewares/prisma_client"
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
 export default async function handler(req, res) {
     const { id } = req.query
    // Validación de método GET
     if (req.method === 'GET' && id) {
         try {
-            const prisma = await getPrismaClient()
-            const product = await prisma.product.findUnique({
+            const prisma = new PrismaClient()
+            const product = await prisma.productVersion.findUnique({
                 where: {
                     id: String(id)
                 }

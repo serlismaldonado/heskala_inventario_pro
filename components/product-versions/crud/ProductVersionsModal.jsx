@@ -1,12 +1,11 @@
-import Modal from 'components/modal/ModalActions'
 import { useEffect, useState } from 'react'
-import ProductCreateForm from './ProductCreateForm'
-import ProductUpdateForm from './ProductUpdateForm'
-import ProductDeleteForm from './ProductDeleteForm'
+import ProductVersionsCreateForm from './ProductVersionsCreateForm'
+import ProductVersionsUpdateForm from './ProductVersionsUpdateForm'
+import ProductVersionsDeleteForm from './ProductVersionsDeleteForm'
 import WarningAlert from '@/components/Alerts/WarningAlert'
 import ModalCrud from '@/components/modal/ModalCrud'
 
-export default function ProductsModal({
+export default function ProductVersionsModal({
 	action,
 	setAction,
 	children,
@@ -15,11 +14,12 @@ export default function ProductsModal({
 	selectedIds,
 	refreshProducts,
 	setSelectedIds,
+	branch,
 }) {
 	// const [modalAction, setModalAction] = useState('')
 	const [selectedForm, setSelectedForm] = useState('')
-	const [branches, setBranches] = useState([])
-	const [brands, setBrands] = useState([])
+	const [productCategories, setProductCategories] = useState([])
+	const [propertiesCategories, setPropertiesCategories] = useState([])
 	const [product, setProduct] = useState({})
 
 	// Cierra el modal y limpia los datos seleccionados y la acción a realizar
@@ -30,20 +30,20 @@ export default function ProductsModal({
 
 	// Obtiene los datos de las sucursales y las marcas
 	useEffect(() => {
-		getBranches().then((data) => setBranches(data))
-		getBrands().then((data) => setBrands(data))
+		getProductCategories(branch).then((data) => setProductCategories(data))
+		getPropertiesCategories(branch).then((data) =>
+			setPropertiesCategories(data),
+		)
 	}, [])
 
 	// Evalúa la acción a realizar y muestra el formulario correspondiente
 	useEffect(() => {
 		if (action === 'Create') {
-			getBranches().then((data) => setBranches(data))
-			getBrands().then((data) => setBrands(data))
+			getProductCategories(branch).then((data) => setProductCategories(data))
 			setSelectedForm(refreshSelectedForm(action))
 		}
 		if (action === 'Update' && selectedIds.length > 0) {
-			getBranches().then((data) => setBranches(data))
-			getBrands().then((data) => setBrands(data))
+			getProductCategories(branch).then((data) => setProductCategories(data))
 			setSelectedForm(refreshSelectedForm(action))
 		}
 
@@ -60,7 +60,7 @@ export default function ProductsModal({
 
 	// Obtiene el ultimo id seleccionado
 	useEffect(() => {
-		getProduct(selectedIds[selectedIds.length - 1]).then((data) =>
+		getProductVersionById(selectedIds[selectedIds.length - 1]).then((data) =>
 			setProduct(data),
 		)
 		closeModal()
@@ -71,10 +71,11 @@ export default function ProductsModal({
 		if (action === 'Create') {
 			return (
 				<ModalCrud modalState={modalState} changeState={changeState}>
-					<ProductCreateForm
+					<ProductVersionsCreateForm
 						closeModal={closeModal}
-						branches={branches}
-						brands={brands}
+						productCategories={productCategories}
+						propertiesCategories={propertiesCategories}
+						branch_id={branch}
 					/>
 				</ModalCrud>
 			)
@@ -82,11 +83,9 @@ export default function ProductsModal({
 		if (action === 'Update' && selectedIds.length > 0) {
 			return (
 				<ModalCrud modalState={modalState} changeState={changeState}>
-					<ProductUpdateForm
+					<ProductVersionsUpdateForm
 						closeModal={closeModal}
-						branches={branches}
-						brands={brands}
-						product={product}
+						categories={categories}
 						refreshProducts={refreshProducts}
 					/>
 				</ModalCrud>
@@ -95,10 +94,11 @@ export default function ProductsModal({
 		if (action === 'Delete' && selectedIds.length > 0) {
 			return (
 				<ModalCrud modalState={modalState} changeState={changeState}>
-					<ProductDeleteForm
+					<ProductVersionsDeleteForm
 						products={selectedIds}
 						refreshProducts={refreshProducts}
 						closeModal={closeModal}
+						setSelectedIds={setSelectedIds}
 					/>
 				</ModalCrud>
 			)
@@ -107,42 +107,46 @@ export default function ProductsModal({
 	// Retorna el formulario seleccionado
 	if (modalState === true && action !== '') return selectedForm
 }
-// Obtiene las sucursales
-const getBranches = async () => {
-	const res = await fetch('http://localhost:3000/api/branches', {
+// Obtiene los productos
+const getProductCategories = async (branch_id) => {
+	const res = await fetch(`http://localhost:3000/api/products/${branch_id}`, {
 		method: 'GET',
 	})
-
-	const mapBranches = await res.json().then((data) => {
-		return data.map((branch) => {
+	const mapProducts = await res.json().then((data) => {
+		return data.map((product) => {
 			return {
-				value: branch.id,
-				label: branch.name,
+				value: product.id,
+				label: product.name,
 			}
 		})
 	})
-
-	return mapBranches
+	return mapProducts
 }
-// Obtiene las marcas
-const getBrands = async () => {
-	const res = await fetch('http://localhost:3000/api/brands', { method: 'GET' })
-	const mapBrands = await res.json().then((data) => {
-		return data.map((brand) => {
+
+// Obtiene las propiedades
+const getPropertiesCategories = async () => {
+	const res = await fetch(`http://localhost:3000/api/categories`, {
+		method: 'GET',
+	})
+	const mapProperties = await res.json().then((data) => {
+		return data.map((property) => {
 			return {
-				value: brand.id,
-				label: brand.name,
+				value: property.id,
+				label: property.name,
 			}
 		})
 	})
-	return mapBrands
+	return mapProperties
 }
+
 // Obtiene el producto seleccionado
-const getProduct = async (id) => {
-	const res = await fetch(`http://localhost:3000/api/products/crud/${id}`, {
-		method: 'GET',
-	})
+const getProductVersionById = async (id) => {
+	const res = await fetch(
+		`http://localhost:3000/api/productversions/crud/${id}`,
+		{
+			method: 'GET',
+		},
+	)
 	const data = await res.json()
-
 	return data
 }

@@ -6,6 +6,7 @@ import PrivateLayout from '@/components/layouts/PrivateLayout'
 // Componentes específicos de la pagina
 import LoadingSpinner from '@/components/utils/LoadingSpinner'
 import ProductTable from '@/components/productos/ProductTable'
+import ProductVersionsTable from '@/components/product-versions/ProductVersionsTable'
 
 // hooks y middlewares
 import { useState, Suspense, useMemo } from 'react'
@@ -42,10 +43,26 @@ export default function Productos({ children, userPreferences, sessionUser }) {
 				</Layout>
 
 				<Suspense fallback={<LoadingSpinner />}>
-					<div className='md:container flex gap-3 p-5'>
+					<div className='md:container overflow-auto flex gap-3 p-5 m-3'>
 						<div className='flex flex-col'>
 							{
 								<ProductTable
+									selectedBranch={selectedBranch}
+									canRead={table.can_read}
+									canCreate={table.can_create}
+									canDelete={table.can_delete}
+									canUpdate={table.can_update}
+								/>
+							}
+						</div>
+					</div>
+				</Suspense>
+
+				<Suspense fallback={<LoadingSpinner />}>
+					<div className='md:container overflow-auto flex gap-3 p-5 m-3'>
+						<div className='flex flex-col'>
+							{
+								<ProductVersionsTable
 									selectedBranch={selectedBranch}
 									canRead={table.can_read}
 									canCreate={table.can_create}
