@@ -2,6 +2,17 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+Crear archivo .env con las siguientes variables
+
+DATABASE_URL="file:../test.db"
+
+AUTH0_CLIENT_ID
+AUTH0_CLIENT_SECRET
+AUTH0_ISSUER
+NEXTAUTH_URL
+NEXTAUTH_SECRET
+JWT_SECRET
+
 First, run the development server:
 
 ```bash
