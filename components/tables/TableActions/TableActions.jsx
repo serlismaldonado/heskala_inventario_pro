@@ -191,7 +191,7 @@ export default function TableActions({
 				</div>
 			</div>
 			<table className='w-full rounded-md table-auto border-collapse'>
-				<TableHeader columns={fields} />
+				<TableHeader columns={fields} /> {/* Aquí se pasan las columnas de la tabla */}
 				<TableBody
 					data={data}
 					columns={columns}
