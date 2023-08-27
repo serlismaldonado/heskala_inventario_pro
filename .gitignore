@@ -42,4 +42,4 @@ test.db
 
 # All database files
 *.db
-
+.env

@@ -23,9 +23,7 @@ export default function ProductCreateForm({
 	const [salePrice, setSalePrice] = useState('')
 	const [stock, setStock] = useState('')
 	const [productCategory, setProductCategory] = useState('')
-	const [propertiesCategory, setPropertiesCategory] = useState(
-		propertiesCategories[0].value,
-	)
+	const [propertiesCategory, setPropertiesCategory] = useState(propertiesCategories[0].value)
 	const [property, setProperty] = useState('')
 	const [value, setValue] = useState('')
 	const [clean, setClean] = useState(false)
@@ -85,33 +83,22 @@ export default function ProductCreateForm({
 	}, [propertiesCategory])
 
 	const saveProduct = async () => {
-		console.log(
-			name,
-			description,
-			purchasePrice,
-			salePrice,
-			stock,
-			selectedId,
-			propertiesList,
-		)
+		console.log(name, description, purchasePrice, salePrice, stock, selectedId, propertiesList)
 		if (name !== '' && description !== '') {
 			console.log('entro')
-			const product = await fetch(
-				'http://localhost:3000/api/productversions/',
-				{
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({
-						name,
-						description,
-						purchasePrice,
-						salePrice,
-						stock,
-						product_id: selectedId,
-						properties: propertiesList,
-					}),
-				},
-			)
+			const product = await fetch('http://localhost:3000/api/productversions/', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					name,
+					description,
+					purchasePrice,
+					salePrice,
+					stock,
+					product_id: selectedId,
+					properties: propertiesList,
+				}),
+			})
 			const data = await product
 
 			if (data.error) {
@@ -128,15 +115,15 @@ export default function ProductCreateForm({
 			<div>
 				<SubmitForm
 					title='Nuevo Producto'
-					description='Agrega tu nuevo producto aqui'
+					description='Agrega tu nuevo producto aquí'
 					style='p-5 bg-slate-100 rounded-md gap-2 m-10 '
 					onSubmit={saveProduct}
 					onCancel={closeModal}
 					cta='Guardar'>
 					<div className='flex gap-2'>
 						<TableSearch
-							title={'Categoria de producto'}
-							description={'Seleccione una categoria para buscar un producto'}
+							title={'Categoría de producto'}
+							description={'Seleccione una categoría para buscar un producto'}
 							data={foundedData}
 							getCondition={setCondition}
 							getFilterField={setFilterField}
@@ -266,7 +253,9 @@ export default function ProductCreateForm({
 														</td>
 														<td className='text-center text-gray-600 text-sm p-2 flex items-center justify-center'>
 															<BtnIconDelete
-																onClick={() => deleteProperty(index)}
+																onClick={() =>
+																	deleteProperty(index)
+																}
 															/>
 														</td>
 													</tr>
@@ -284,9 +273,7 @@ export default function ProductCreateForm({
 }
 
 const getPropertiesByCategory = async (idCategory) => {
-	const properties = await fetch(
-		`http://localhost:3000/api/properties/${idCategory}/`,
-	)
+	const properties = await fetch(`http://localhost:3000/api/properties/${idCategory}/`)
 	const data = await properties.json().then((data) =>
 		data.map((item) => {
 			return { value: item.id, label: `${item.name}` }
@@ -298,12 +285,9 @@ async function getProductsByCondition(branch_id, condition, filterField) {
 	filterField = filterField === '' ? 'id' : filterField
 
 	if (String(condition).trim() === '') {
-		const products = await fetch(
-			`http://localhost:3000/api/products/${branch_id}`,
-			{
-				method: 'GET',
-			},
-		)
+		const products = await fetch(`http://localhost:3000/api/products/${branch_id}`, {
+			method: 'GET',
+		})
 
 		const _mapProducts = await products.json().then((data) => {
 			return data.map((product) => {
