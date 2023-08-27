@@ -46,20 +46,15 @@ export default function ProductCreateForm({ closeModal, branches, brands }) {
 	return (
 		<Suspense fallback={<LoadingSpinner />}>
 			<SubmitForm
-				title='Nuevo Producto'
-				description='Agrega tu nuevo producto aqui'
+				title='Crear Categoría de producto'
+				description='Agrega una nueva categoría de producto'
 				style='px-[40px] py-4 bg-slate-50 rounded-md'
 				onSubmit={saveProduct}
 				onCancel={closeModal}
 				cta='Guardar'>
+				<InputText placeholder='Nombre' type='text' passData={getName} required={true} />
 				<InputText
-					placeholder='Nombre'
-					type='text'
-					passData={getName}
-					required={true}
-				/>
-				<InputText
-					placeholder='Descripcion'
+					placeholder='Descripción'
 					type='text'
 					passData={getDescription}
 					required={true}

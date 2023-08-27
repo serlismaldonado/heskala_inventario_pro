@@ -24,15 +24,11 @@ export default function ProductTable({
 
 	// Modifica el campo por el que se filtrará
 	useMemo(() => {
-		getProductsByCondition(selectedBranch.value, condition, filterField).then(
-			(data) => setProducts(data),
+		getProductsByCondition(selectedBranch.value, condition, filterField).then((data) =>
+			setProducts(data),
 		)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [condition, action, selectedBranch, filterField])
-
-	// useMemo(() => {
-	// 	console.log(selectedIds)
-	// }, [selectedIds])
 
 	return (
 		// Envuelve el componente TableActions en un Suspense para mostrar un spinner mientras se obtienen los datos
@@ -40,6 +36,7 @@ export default function ProductTable({
 			<TableActions
 				data={_products}
 				canRead={canRead}
+				fields={['id', 'nombre', 'detalle']}
 				canCreate={canCreate}
 				canDelete={canDelete}
 				canUpdate={canUpdate}
@@ -50,6 +47,8 @@ export default function ProductTable({
 				action={action}
 				setAction={setAction}
 				setSelectedIds={setSelectedIds}
+				tittle={'Categorías de productos'}
+				subTittle={'Categorías de productos de la sucursal'}
 			/>
 			<ProductsModal
 				action={action}

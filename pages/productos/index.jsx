@@ -21,6 +21,8 @@ export default function Productos({ children, userPreferences, sessionUser }) {
 		value: userPreferences.preference.active_branch,
 		label: 'Default',
 	})
+
+	console.log(userPreferences.preference.active_branch)
 	const [user, setUser] = useState({})
 	const { data: session, status } = useSession()
 
@@ -43,8 +45,8 @@ export default function Productos({ children, userPreferences, sessionUser }) {
 				</Layout>
 
 				<Suspense fallback={<LoadingSpinner />}>
-					<div className='md:container overflow-auto flex gap-3 p-5 m-3'>
-						<div className='flex flex-col'>
+					<div className='md:container flex-wrap overflow-auto flex gap-3 p-5 m-3'>
+						<div className='flex flex-col gap-2'>
 							{
 								<ProductTable
 									selectedBranch={selectedBranch}
@@ -55,12 +57,7 @@ export default function Productos({ children, userPreferences, sessionUser }) {
 								/>
 							}
 						</div>
-					</div>
-				</Suspense>
-
-				<Suspense fallback={<LoadingSpinner />}>
-					<div className='md:container overflow-auto flex gap-3 p-5 m-3'>
-						<div className='flex flex-col'>
+						<div className=''>
 							{
 								<ProductVersionsTable
 									selectedBranch={selectedBranch}
@@ -73,6 +70,12 @@ export default function Productos({ children, userPreferences, sessionUser }) {
 						</div>
 					</div>
 				</Suspense>
+				{/* 
+				<Suspense fallback={<LoadingSpinner />}>
+					<div className='md:container overflow-auto flex gap-3 p-5 m-3'>
+						
+					</div>
+					</Suspense> */}
 			</PrivateLayout>
 		</div>
 	)

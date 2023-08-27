@@ -24,53 +24,52 @@ export default function ProductTable({
 
 	// Modifica el campo por el que se filtrará
 	useMemo(() => {
-		getProductsByCondition(selectedBranch.value, condition, filterField).then(
-			(data) => setProducts(data),
+		getProductsByCondition(selectedBranch.value, condition, filterField).then((data) =>
+			setProducts(data),
 		)
+		console.log(filterField)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [condition, action, selectedBranch, filterField])
-
-	// useMemo(() => {
-	// 	console.log(selectedIds)
-	// }, [selectedIds])
 
 	return (
 		// Envuelve el componente TableActions en un Suspense para mostrar un spinner mientras se obtienen los datos
 		<Suspense fallback={<LoadingSpinner />}>
-			<TableActions
-				data={_products}
-				canRead={canRead}
-				canCreate={canCreate}
-				canDelete={canDelete}
-				canUpdate={canUpdate}
-				getCondition={setCondition}
-				getFilterField={setFilterField}
-				isShowed={isShowed}
-				setIsShowed={setIsShowed}
-				action={action}
-				setAction={setAction}
-				setSelectedIds={setSelectedIds}
-			/>
-			<ProductsVersionModal
-				action={action}
-				modalState={isShowed}
-				changeState={setIsShowed}
-				branch={selectedBranch.value}
-				selectedIds={selectedIds}
-				setAction={setAction}
-				refreshProducts={getProductsByCondition}
-				setSelectedIds={setSelectedIds}
-			/>
+			<div className='flex flex-wrap'>
+				<TableActions
+					data={_products}
+					canRead={canRead}
+					canCreate={canCreate}
+					canDelete={canDelete}
+					canUpdate={canUpdate}
+					getCondition={setCondition}
+					getFilterField={setFilterField}
+					isShowed={isShowed}
+					setIsShowed={setIsShowed}
+					action={action}
+					setAction={setAction}
+					setSelectedIds={setSelectedIds}
+					tittle={'Versiones de productos'}
+					subTittle={'Versiones de productos de la sucursal'}
+					fields={['id', 'nombre', 'detalle', 'precio', 'stock']}
+				/>
+				<ProductsVersionModal
+					action={action}
+					modalState={isShowed}
+					changeState={setIsShowed}
+					branch={selectedBranch.value}
+					selectedIds={selectedIds}
+					setAction={setAction}
+					refreshProducts={getProductsByCondition}
+					setSelectedIds={setSelectedIds}
+				/>
+			</div>
 		</Suspense>
 	)
 }
 async function getProductVersions(branch_id) {
-	const _products = await fetch(
-		`http://localhost:3000/api/productversions/${branch_id}`,
-		{
-			method: 'GET',
-		},
-	)
+	const _products = await fetch(`http://localhost:3000/api/productversions/${branch_id}`, {
+		method: 'GET',
+	})
 
 	// Mapea los datos de los productos
 	const _mapProducts = await _products.json().then((data) => {
@@ -79,8 +78,8 @@ async function getProductVersions(branch_id) {
 				id: product.id,
 				name: product.name,
 				description: product.description,
-				price: Number(product.purchase_price),
-				stock_quantity: Number(product.stock_quantity),
+				price: String(product.purchase_price),
+				stock_quantity: String(product.stock_quantity),
 			}
 		})
 	})
@@ -97,7 +96,7 @@ async function getProductsByCondition(branch_id, condition, filterField) {
 
 	const route = `http://localhost:3000/api/productversions/${branch_id}/${String(
 		filterField,
-	).trim()}/${String(condition).trim()}`
+	).trim()}/${condition.trim()}`
 
 	const _products = await fetch(route, {
 		method: 'GET',

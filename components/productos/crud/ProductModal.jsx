@@ -64,6 +64,7 @@ export default function ProductsModal({
 			setProduct(data),
 		)
 		closeModal()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedIds])
 
 	// Refresca el formulario seleccionado según la acción
